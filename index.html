@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste de Tâches</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 2rem;
+      background-color: #f4f6f8;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .task-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .task-input input, .task-input select {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+    .task-input button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    .task-input button:hover {
+      background-color: #45a049;
+    }
+    .task-list {
+      list-style: none;
+      padding: 0;
+    }
+    .task-item {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ddd;
+    }
+    .task-item label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .actions button {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    .actions button:hover {
+      background-color: #0069d9;
+    }
+    .label {
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      background-color: #e0e0e0;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ma Liste de Tâches</h1>
+    <div class="task-input">
+      <input type="text" id="taskName" placeholder="Nouvelle tâche...">
+      <select id="taskLabel">
+        <option value="">Aucun label</option>
+        <option value="Urgent">Urgent</option>
+        <option value="Important">Important</option>
+        <option value="Facultatif">Facultatif</option>
+      </select>
+      <button onclick="addTask()">Ajouter</button>
+    </div>
+    <ul id="taskList" class="task-list"></ul>
+    <div class="actions">
+      <button onclick="deleteSelected()">Supprimer sélection</button>
+      <button onclick="markSelectedDone()">Marquer comme fait</button>
+    </div>
+  </div>
+
+  <script>
+    function addTask() {
+      const nameInput = document.getElementById('taskName');
+      const labelSelect = document.getElementById('taskLabel');
+      const name = nameInput.value.trim();
+      const label = labelSelect.value;
+      if (!name) return;
+
+      const li = document.createElement('li');
+      li.className = 'task-item';
+
+      const labelSpan = label ? `<span class='label'>${label}</span>` : '';
+
+      li.innerHTML = `
+        <label>
+          <input type="checkbox">
+          <span>${name}</span>
+          ${labelSpan}
+        </label>
+        <button onclick="this.parentElement.remove()" style="background:red;padding:0.2rem 0.5rem;border:none;border-radius:0.5rem;color:white;">✕</button>
+      `;
+
+      document.getElementById('taskList').appendChild(li);
+      nameInput.value = '';
+      labelSelect.value = '';
+    }
+
+    function deleteSelected() {
+      document.querySelectorAll('#taskList input[type=checkbox]:checked')
+        .forEach(cb => cb.closest('.task-item').remove());
+    }
+
+    function markSelectedDone() {
+      document.querySelectorAll('#taskList input[type=checkbox]:checked')
+        .forEach(cb => {
+          const span = cb.parentElement.querySelector('span');
+          span.style.textDecoration = 'line-through';
+          cb.checked = false;
+        });
+    }
+  </script>
+</body>
+</html>
